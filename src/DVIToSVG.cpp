@@ -161,6 +161,8 @@ void DVIToSVG::convert (const string &rangestr, pair<int,int> *pageinfo) {
 	PageRanges ranges;
 	if (!ranges.parse(rangestr, numberOfPages()))
 		throw MessageException("invalid page range format");
+	if (ranges.empty())
+		throw MessageException("selected page is not available");
 
 	Message::mstream(false, Message::MC_PAGE_NUMBER) << "pre-processing DVI file (format version "  << getDVIVersion() << ")\n";
 	if (auto actions = dynamic_cast<DVIToSVGActions*>(_actions.get())) {

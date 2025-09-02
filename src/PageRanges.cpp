@@ -47,16 +47,13 @@ bool PageRanges::parse (const string &str, int max_page) {
 		if (!isdigit(ir.peek()) && ir.peek() != '-')
 			return false;
 		if (isdigit(ir.peek()))
-			first = ir.getInt();
+			first = last = ir.getInt();
 		ir.skipSpace();
-		if (ir.peek() != '-')
-			last = first;
-		else {
+		if (ir.peek() == '-') {
 			while (ir.peek() == '-')
 				ir.get();
 			ir.skipSpace();
-			if (isdigit(ir.peek()))
-				last = ir.getInt();
+			last = isdigit(ir.peek()) ? ir.getInt() : max_page;
 		}
 		ir.skipSpace();
 		if (ir.peek() == ',') {
@@ -70,11 +67,13 @@ bool PageRanges::parse (const string &str, int max_page) {
 			swap(first, last);
 		first = max(1, first);
 		last  = max(first, last);
-		if (max_page > 0) {
-			first = min(first, max_page);
-			last  = min(last, max_page);
+		if (first <= max_page || max_page == 0) {
+			if (max_page > 0) {
+				first = min(first, max_page);
+				last  = min(last, max_page);
+			}
+			addRange(first, last);
 		}
-		addRange(first, last);
 	}
 	// apply filter if present
 	if (ir.peek() == ':') {

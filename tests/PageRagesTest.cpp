@@ -87,6 +87,41 @@ TEST(PageRangesTest, single_range_ropen) {
 }
 
 
+TEST(PageRangesTest, out_of_bounds1) {
+	PageRanges pr;
+	ASSERT_TRUE(pr.parse("11", 10));
+	ASSERT_TRUE(pr.empty());
+	ASSERT_EQ(pr.numberOfPages(), 0u);
+	pr.clear();
+	ASSERT_TRUE(pr.parse("11-20", 10));
+	ASSERT_TRUE(pr.empty());
+	ASSERT_EQ(pr.numberOfPages(), 0u);
+}
+
+
+TEST(PageRangesTest, out_of_bounds2) {
+	PageRanges pr;
+	ASSERT_TRUE(pr.parse("10-20", 10));
+	ASSERT_FALSE(pr.empty());
+	ASSERT_EQ(pr.ranges().front(), PageRanges::Range(10,10));
+	ASSERT_EQ(pr.numberOfPages(), 1u);
+	pr.clear();
+	ASSERT_TRUE(pr.parse("10-20"));
+	ASSERT_FALSE(pr.empty());
+	ASSERT_EQ(pr.ranges().front(), PageRanges::Range(10,20));
+	ASSERT_EQ(pr.numberOfPages(), 11u);
+}
+
+
+TEST(PageRangesTest, out_of_bounds3) {
+	PageRanges pr;
+	ASSERT_TRUE(pr.parse("10-20,20-,20-30,8-", 10));
+	ASSERT_FALSE(pr.empty());
+	ASSERT_EQ(pr.ranges().front(), PageRanges::Range(8,10));
+	ASSERT_EQ(pr.numberOfPages(), 3u);
+}
+
+
 TEST(PageRangesTest, multiple1) {
 	PageRanges pr;
 	ASSERT_TRUE(pr.parse("11,6,9,1,75,6,3"));
