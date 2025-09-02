@@ -27,7 +27,6 @@
 #include <vector>
 #include "BoundingBox.hpp"
 #include "Ghostscript.hpp"
-#include "InputReader.hpp"
 #include "MessageException.hpp"
 
 
