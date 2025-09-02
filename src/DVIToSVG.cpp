@@ -188,7 +188,7 @@ void DVIToSVG::convert (const string &rangestr, pair<int,int> *pageinfo) {
 /** Writes the hash values of a selected set of pages to an output stream.
  *  @param[in] rangestr string describing the pages to convert
  *  @param[in,out] os stream the output is written to */
-void DVIToSVG::listHashes (const string &rangestr, std::ostream &os) {
+void DVIToSVG::listHashes (const string &rangestr, std::ostream &os) const {
 	PageRanges ranges;
 	if (!ranges.parse(rangestr, numberOfPages()))
 		throw MessageException("invalid page range format");
