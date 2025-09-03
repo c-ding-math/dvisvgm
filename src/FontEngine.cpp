@@ -162,7 +162,7 @@ RangeMap FontEngine::buildGidToCharCodeMap () const {
 	FT_UInt gid;  // index of current glyph
 	uint32_t charcode = FT_Get_First_Char(_currentFace, &gid);
 	while (gid) {
-		if (!charmap.valueAt(gid))
+		if (!charmap.valueExists(gid))
 			charmap.addRange(gid, gid, charcode);
 		charcode = FT_Get_Next_Char(_currentFace, charcode, &gid);
 	}
