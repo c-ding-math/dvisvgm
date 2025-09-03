@@ -346,22 +346,20 @@ bool PhysicalFont::getGlyph (int c, GraphicsPath<int32_t> &glyph, GFGlyphTracer:
 			glyph = *cached_glyph;
 			return true;
 		}
-		else {
-			string gfname;
-			if (createGF(gfname)) {
-				try {
-					double ds = getMetrics() ? getMetrics()->getDesignSize() : 1;
-					GFGlyphTracer tracer(gfname, unitsPerEm()/ds, callback);
-					tracer.setGlyph(glyph);
-					tracer.executeChar(c);
-					glyph.closeOpenSubPaths();
-					if (!CACHE_PATH.empty())
-						_cache.setGlyph(c, glyph);
-					return true;
-				}
-				catch (GFException &) {
-					// @@ print error message
-				}
+		string gfname;
+		if (createGF(gfname)) {
+			try {
+				double ds = getMetrics() ? getMetrics()->getDesignSize() : 1;
+				GFGlyphTracer tracer(gfname, unitsPerEm()/ds, callback);
+				tracer.setGlyph(glyph);
+				tracer.executeChar(c);
+				glyph.closeOpenSubPaths();
+				if (!CACHE_PATH.empty())
+					_cache.setGlyph(c, glyph);
+				return true;
+			}
+			catch (GFException &) {
+				// @@ print error message
 			}
 		}
 	}
