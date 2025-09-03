@@ -2,12 +2,12 @@
 .\"     Title: dvisvgm
 .\"    Author: Martin Gieseking <martin.gieseking@uos.de>
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: 2025-05-22
+.\"      Date: 2025-09-03
 .\"    Manual: dvisvgm Manual
 .\"    Source: dvisvgm 3.5
 .\"  Language: English
 .\"
-.TH "DVISVGM" "1" "2025\-05\-22" "dvisvgm 3\&.5" "dvisvgm Manual"
+.TH "DVISVGM" "1" "2025\-09\-03" "dvisvgm 3\&.5" "dvisvgm Manual"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -856,13 +856,28 @@ This option selects the pages to be processed\&. Parameter
 \fIranges\fR
 consists of a comma\-separated list of single page numbers and/or page ranges\&. A page range is a pair of numbers separated by a hyphen, e\&.g\&. 5\-12\&. Thus, a page sequence might look like this: 2\-4,6,9\-12,15\&. It doesn\(cqt matter if a page is given more than once or if page ranges overlap\&. dvisvgm always extracts the page numbers in ascending order and converts them only once\&.
 .sp
-In order to stay compatible with previous versions, the default page sequence is 1\&. dvisvgm therefore converts only the first page and not the whole document if option
+In order to stay compatible with previous versions, the default page sequence is
+\fB1\fR\&. dvisvgm therefore converts only the first page and not the whole document if option
 \fB\-\-page\fR
 is omitted\&. Usually, page ranges consist of two numbers denoting the first and last page to be converted\&. If the conversion should start at page 1, or if it should continue up to the last DVI page, the first or second range number can be omitted, respectively\&. Example:
 \fB\-\-page=\-10\fR
 converts all pages up to page 10,
 \fB\-\-page=10\-\fR
 converts all pages starting with page 10\&. Please consider that the page values don\(cqt refer to the page numbers printed on the corresponding page\&. Instead, the physical page count is expected, where the first page always gets number 1\&.
+.sp
+To select the last page, expression
+\fB%P\fR
+can be used instead of an explicit page number\&. It\(cqs replaced by the number of the last page\&. For example,
+\fB\-\-page=1,%P\fR
+converts the first and the last page of the document\&.
+.sp
+Additionally, arithmetic expressions of the form
+\fB%(\fR\fIexpr\fR\fB)\fR
+in place of numbers are valid too\&. The resulting values are always rounded down to the nearest integer\&. See option
+\fB\-\-output\fR
+for more information about the syntax and the supported arithmetic operators\&. Example:
+\fB\-\-page=%(P\-2)\-\fR
+converts the last three pages\&.
 .sp
 At the end of the range sequence an optional filter specifier can be appended in order to remove certain page numbers from the sequence\&. Currently, the two filters
 \fB:even\fR

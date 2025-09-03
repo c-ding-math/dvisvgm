@@ -221,6 +221,47 @@ TEST(PageRangesTest, odd2) {
 }
 
 
+TEST(PageRangesTest, expr1) {
+	PageRanges pr;
+	ASSERT_TRUE(pr.parse("%P", 10));
+	EXPECT_EQ(pr.size(), 1u);
+	EXPECT_EQ(pr.ranges().front(), PageRanges::Range(10,10));
+	pr.clear();
+	ASSERT_TRUE(pr.parse("-%P", 10));
+	EXPECT_EQ(pr.size(), 1u);
+	EXPECT_EQ(pr.ranges().front(), PageRanges::Range(1,10));
+	pr.clear();
+	ASSERT_TRUE(pr.parse("%P-", 10));
+	EXPECT_EQ(pr.size(), 1u);
+	EXPECT_EQ(pr.ranges().front(), PageRanges::Range(10,10));
+	pr.clear();
+	ASSERT_TRUE(pr.parse("5-%P", 10));
+	EXPECT_EQ(pr.size(), 1u);
+	EXPECT_EQ(pr.ranges().front(), PageRanges::Range(5,10));
+	pr.clear();
+	ASSERT_TRUE(pr.parse("1,%P,2", 10));
+	EXPECT_EQ(pr.size(), 2u);
+	EXPECT_EQ(pr.ranges().front(), PageRanges::Range(1,2));
+	EXPECT_EQ(pr.ranges().back(), PageRanges::Range(10,10));
+}
+
+
+TEST(PageRangesTest, expr2) {
+	PageRanges pr;
+	ASSERT_TRUE(pr.parse("%(P-1)", 10));
+	EXPECT_EQ(pr.size(), 1u);
+	EXPECT_EQ(pr.ranges().front(), PageRanges::Range(9,9));
+	pr.clear();
+	ASSERT_TRUE(pr.parse("%(P-2)-", 10));
+	EXPECT_EQ(pr.size(), 1u);
+	EXPECT_EQ(pr.ranges().front(), PageRanges::Range(8,10));
+	pr.clear();
+	ASSERT_TRUE(pr.parse("-%(P-2)", 10));
+	EXPECT_EQ(pr.size(), 1u);
+	EXPECT_EQ(pr.ranges().front(), PageRanges::Range(1,8));
+}
+
+
 TEST(PageRangesTest, error) {
 	PageRanges pr;
 	EXPECT_FALSE(pr.parse("x"));
@@ -228,4 +269,7 @@ TEST(PageRangesTest, error) {
 	EXPECT_FALSE(pr.parse("5 6"));
 	EXPECT_FALSE(pr.parse("5,"));
 	EXPECT_FALSE(pr.parse("1-9:dummy"));
+	EXPECT_FALSE(pr.parse("%p"));
+	EXPECT_FALSE(pr.parse("%(p-1)"));
+	EXPECT_FALSE(pr.parse("%(1/0)"));
 }
