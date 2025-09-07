@@ -155,16 +155,21 @@ bool FontEngine::setCharMap (const CharMapID &charMapID) const {
 }
 
 
-/** Returns a character map that maps from glyph indexes to character codes
- *  of the current encoding. */
-RangeMap FontEngine::buildGidToCharCodeMap () const {
+/** Returns a character map that maps from glyph indexes to Unicode code points */
+RangeMap FontEngine::buildGidToUnicodeMap () const {
 	RangeMap charmap;
-	FT_UInt gid;  // index of current glyph
-	uint32_t charcode = FT_Get_First_Char(_currentFace, &gid);
-	while (gid) {
-		if (!charmap.valueExists(gid))
-			charmap.addRange(gid, gid, charcode);
-		charcode = FT_Get_Next_Char(_currentFace, charcode, &gid);
+	if (!_currentFace)
+		return charmap;
+	FT_CharMap ft_cmap = _currentFace->charmap;
+	if (FT_Select_Charmap(_currentFace, FT_ENCODING_UNICODE) == 0) {
+		FT_UInt gid;  // index of current glyph
+		uint32_t charcode = FT_Get_First_Char(_currentFace, &gid);
+		while (gid) {
+			if (!charmap.valueExists(gid))
+				charmap.addRange(gid, gid, charcode);
+			charcode = FT_Get_Next_Char(_currentFace, charcode, &gid);
+		}
+		FT_Set_Charmap(_currentFace, ft_cmap);
 	}
 	// In case the Unicode map of the font doesn't cover all characters, some
 	// of them could still be identified by their names if present in the font.
